@@ -1,8 +1,5 @@
-import solara
 import seaborn as sns
 from mesa.experimental import JupyterViz
-from matplotlib.figure import Figure
-import networkx as nx
 from stablecoin.model import BoltzmannWealthModelNetwork
 
 sns.set_theme()
@@ -24,7 +21,7 @@ def agent_portrayal(agent):
     return {"color": "tab:green"} if agent.wealth > 0 else {"color": "tab:grey"}
 
 
-def get_page():
+def get_ui():
     return JupyterViz(
         BoltzmannWealthModelNetwork,
         model_params,

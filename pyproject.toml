@@ -27,7 +27,7 @@ classifiers = [
 
 dependencies = [
     "matplotlib>=3.8.2",
-    "simular-evm>=0.2.5",
+    "simular-evm>=0.2.6",
     "mesa==2.3.0",
     "jupyter>=1.0.0",
     "seaborn",

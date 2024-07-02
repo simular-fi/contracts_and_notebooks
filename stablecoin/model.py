@@ -35,15 +35,6 @@ class MoneyAgent(mesa.Agent):
         return bal / 10**18  # readability
 
     def move(self):
-        # possible_steps = [
-        #    node
-        #    for node in self.model.grid.get_neighborhood(self.pos, include_center=False)
-        #    if self.model.grid.is_cell_empty(node)
-        # ]
-        # if len(possible_steps) > 0:
-        #    new_position = self.random.choice(possible_steps)
-        #    self.model.grid.move_agent(self, new_position)
-
         possible_steps = self.model.grid.get_neighborhood(
             self.pos, moore=True, include_center=False
         )
@@ -51,15 +42,8 @@ class MoneyAgent(mesa.Agent):
         self.model.grid.move_agent(self, new_position)
 
     def give_money(self, amount):
-        # neighbors = self.model.grid.get_neighbors(self.pos, include_center=False)
-        # if len(neighbors) > 0:
-        #    other = self.random.choice(neighbors)
-        #    self.model.contract.transfer.transact(
-        #        other.wallet, amount, caller=self.wallet
-        #    )
         cellmates = self.model.grid.get_cell_list_contents([self.pos])
-        # exclude myself...
-        cellmates.pop(cellmates.index(self))
+        cellmates.pop(cellmates.index(self))  # exclude myself...
         if len(cellmates) > 0:
             other = self.random.choice(cellmates)
             self.model.contract.transfer.transact(
@@ -82,10 +66,6 @@ class BoltzmannWealthModelNetwork(mesa.Model):
     def __init__(self, num_agents=100, width=10, height=10):
         super().__init__()
         self.num_agents = num_agents
-        # self.num_nodes = num_nodes if num_nodes >= self.num_agents else self.num_agents
-
-        # self.G = nx.erdos_renyi_graph(n=self.num_nodes, p=0.5)
-        # self.grid = mesa.space.NetworkGrid(self.G)
         self.grid = mesa.space.MultiGrid(width, height, True)
 
         self.schedule = mesa.time.RandomActivation(self)
@@ -93,8 +73,6 @@ class BoltzmannWealthModelNetwork(mesa.Model):
             model_reporters={"Gini": compute_gini},
             agent_reporters={"Wealth": lambda _: _.wealth},
         )
-
-        # list_of_random_nodes = self.random.sample(list(self.G), self.num_agents)
 
         # Setup smart contract specifics
         self.evm = simular.PyEvm()
@@ -112,8 +90,6 @@ class BoltzmannWealthModelNetwork(mesa.Model):
             x = self.random.randrange(self.grid.width)
             y = self.random.randrange(self.grid.height)
             self.grid.place_agent(a, (x, y))
-
-            # self.grid.place_agent(a, list_of_random_nodes[i])
 
         self.running = True
         self.datacollector.collect(self)
